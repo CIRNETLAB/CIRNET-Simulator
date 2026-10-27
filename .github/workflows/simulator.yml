@@ -1,0 +1,62 @@
+name: Simulator
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  NETCIRCUIT_CONTRACTS_DEV_WHEEL_URL: ${{ vars.NETCIRCUIT_CONTRACTS_DEV_WHEEL_URL }}
+  NETCIRCUIT_CONTRACTS_DEV_WHEEL_SHA256: ${{ vars.NETCIRCUIT_CONTRACTS_DEV_WHEEL_SHA256 }}
+  NETCIRCUIT_CONTRACTS_WHEEL_URL: ${{ vars.NETCIRCUIT_CONTRACTS_WHEEL_URL }}
+  NETCIRCUIT_CONTRACTS_WHEEL_SHA256: ${{ vars.NETCIRCUIT_CONTRACTS_WHEEL_SHA256 }}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bootstrap the pinned independent allocator
+        env:
+          NETCIRCUIT_ARTIFACTS_DIR: ${{ runner.temp }}/netcircuit-verification
+          NETCIRCUIT_ARTIFACTS_TOKEN: ${{ secrets.NETCIRCUIT_ARTIFACTS_READ_TOKEN }}
+        run: python scripts/bootstrap_contract_tools.py
+      - name: Keep temporary build/install output in the owned session
+        shell: bash
+        run: |
+          {
+            echo "TMP=$NETCIRCUIT_ARTIFACTS_SESSION"
+            echo "TEMP=$NETCIRCUIT_ARTIFACTS_SESSION"
+            echo "TMPDIR=$NETCIRCUIT_ARTIFACTS_SESSION"
+            echo "PIP_CACHE_DIR=$NETCIRCUIT_ARTIFACTS_SESSION/pip-cache"
+            echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)"
+          } >> "$GITHUB_ENV"
+      - name: Install locked dependencies and reviewed Contracts
+        env:
+          NETCIRCUIT_ARTIFACTS_TOKEN: ${{ secrets.NETCIRCUIT_ARTIFACTS_READ_TOKEN }}
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-verification.lock
+          python scripts/install_contracts.py
+      - name: Build and verify the installed distribution
+        run: |
+          python -m build --no-isolation --outdir "$NETCIRCUIT_ARTIFACTS_SESSION/dist"
+          python -m pip install --no-deps --force-reinstall "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.2.0-py3-none-any.whl"
+          python -m pip check
+          python scripts/check_installed.py --wheel "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.2.0-py3-none-any.whl"
+          (cd "$NETCIRCUIT_ARTIFACTS_SESSION/dist" && sha256sum ./*.whl ./*.tar.gz > SHA256SUMS)
+          cd "$NETCIRCUIT_ARTIFACTS_SESSION"
+          python -I -m pytest "$GITHUB_WORKSPACE/tests" --basetemp "$NETCIRCUIT_ARTIFACTS_SESSION/pytest"
+      - name: Upload versioned wheel and sdist for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-0.2.0
+          path: ${{ env.NETCIRCUIT_ARTIFACTS_SESSION }}/dist/*
+          if-no-files-found: error
+      - name: Clean this owned verification session
+        if: always() && env.NETCIRCUIT_ARTIFACTS_SESSION != ''
+        run: node "$NETCIRCUIT_ARTIFACTS_CLI" --cleanup "$NETCIRCUIT_ARTIFACTS_SESSION"

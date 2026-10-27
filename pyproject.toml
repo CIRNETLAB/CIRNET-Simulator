@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netcircuit-simulator"
+version = "0.2.0"
+description = "Deterministic digital and bounded DC simulation for net*CIRCUIT Remote"
+readme = "README.md"
+requires-python = ">=3.11"
+license-files = ["LICENSE"]
+dependencies = ["netcircuit-contracts==1.0.1", "jsonschema==4.26.0"]
+
+[project.optional-dependencies]
+test = ["pytest==9.1.1"]
+
+[tool.setuptools.packages.find]
+include = ["netcircuit_sim*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider --import-mode=importlib"
+testpaths = ["tests"]
