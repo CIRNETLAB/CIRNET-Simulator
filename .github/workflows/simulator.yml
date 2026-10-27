@@ -33,7 +33,9 @@ jobs:
             echo "TMP=$NETCIRCUIT_ARTIFACTS_SESSION"
             echo "TEMP=$NETCIRCUIT_ARTIFACTS_SESSION"
             echo "TMPDIR=$NETCIRCUIT_ARTIFACTS_SESSION"
+            echo "npm_config_cache=$NETCIRCUIT_ARTIFACTS_SESSION/npm-cache"
             echo "PIP_CACHE_DIR=$NETCIRCUIT_ARTIFACTS_SESSION/pip-cache"
+            echo "PYTHONDONTWRITEBYTECODE=1"
             echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)"
           } >> "$GITHUB_ENV"
       - name: Install locked dependencies and reviewed Contracts

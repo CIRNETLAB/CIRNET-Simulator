@@ -1,6 +1,6 @@
 # net-Circuit-Simulator
 
-Independent `netcircuit-simulator==0.1.1` with replaceable simulation backends, Python >=3.11, consuming `netcircuit-contracts==0.1.1`. The Python namespace and public preview/dispatch imports remain `netcircuit_sim`. Release artifacts are wheel and sdist; the migration candidate is LOCAL_UNPUBLISHED until separately approved publication. No sibling checkout or API/Web implementation is required.
+Independent `netcircuit-simulator==0.1.1` with replaceable simulation backends, Python >=3.11, consuming `netcircuit-contracts==0.1.1`. The Python namespace and public preview/dispatch imports remain `netcircuit_sim`. Release artifacts are wheel and sdist; publish immutable `v0.1.1` artifacts after standalone and integrated acceptance, with source revision and SHA256 in the system manifest. No sibling checkout or API/Web implementation is required.
 
 Supported CircuitGraph 1.0/1.1/1.2 passes offline schema/authoring validation and explicit domain dispatch into deterministic event simulation. Models retain switch/input, AND/74HC08, NOT, OR/XOR, LED/probe, clock and the bounded powered-HC08/source/resistor/LED DC subset. Known board/instrument visuals create no electrical nets. Unknown models are UNEXECUTABLE. Analog/SPICE/mixed adapters remain UNAVAILABLE without fabricated samples.
 
@@ -42,7 +42,7 @@ CI accepts immutable HTTPS Contracts/DEV URLs and SHA256 repository variables pl
 
 This release adds `netcircuit_sim.backends` and keeps all eight legacy runtime modules byte-identical to Remote revision 25d2e6784035f6a8165142f8a8e03c4534512bcc. Existing Graph 1.0/1.1/1.2, model selection, descriptor identity, package/pin revisions, public import names and numeric bounds remain unchanged. Tests load shared fixtures from installed Contracts resources. API and Hardware consumers must both pin Simulator 0.1.1 and Contracts 0.1.1.
 
-Rollback restores the prior compatible Simulator/Contracts wheels and consumer dependency pins. No stored graph/capture/data conversion is part of M3. Original Remote source is retained as frozen provenance/rollback material. Git history extraction/mapping and integrated acceptance are recorded by the migration owner; no ancestry merge, authored commit or publication is implicit in this working tree.
+Rollback restores the prior compatible Simulator/Contracts wheels and consumer dependency pins. No stored graph/capture/data conversion is part of M3. Original Remote source is retained as frozen provenance/rollback material. Git history extraction/mapping, ancestry reachability and integrated acceptance are recorded by the migration release process; historical extraction reports preserve their original results.
 
 
 ## Replaceable backend boundary
