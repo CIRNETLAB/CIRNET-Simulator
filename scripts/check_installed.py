@@ -30,15 +30,15 @@ def verify_selected_wheel(wheel, artifact):
         installed_digest=archive_info['hash'].split('=',1)[1]
     if installed_digest!=digest:
         raise ValueError('Installed Simulator archive digest differs from the selected wheel; force reinstall the selected wheel.')
-    prefix='netcircuit_simulator-0.2.0.dist-info/'
+    prefix='netcircuit_simulator-0.1.1.dist-info/'
     expected={'netcircuit_sim/'+name+'.py' for name in ('__init__','analog','circuit','dispatch','engine','logic','nets','waveform','backends')}
     expected.update(prefix+name for name in ('licenses/LICENSE','METADATA','WHEEL','top_level.txt','RECORD'))
     with ZipFile(io.BytesIO(payload)) as archive:
         if len(archive.namelist())!=len(expected) or set(archive.namelist())!=expected:
             raise ValueError('Unexpected selected wheel payload inventory.')
         metadata=Parser().parsestr(archive.read(prefix+'METADATA').decode('utf-8'))
-        if metadata['Name']!='netcircuit-simulator' or metadata['Version']!='0.2.0':
-            raise ValueError('The selected wheel must contain netcircuit-simulator==0.2.0.')
+        if metadata['Name']!='netcircuit-simulator' or metadata['Version']!='0.1.1':
+            raise ValueError('The selected wheel must contain netcircuit-simulator==0.1.1.')
         selected_records={row[0]:row[1:] for row in csv.reader(io.StringIO(archive.read(prefix+'RECORD').decode('utf-8')))}
         installed_records={row[0]:row[1:] for row in csv.reader(io.StringIO(artifact.read_text('RECORD') or ''))}
         if set(selected_records)!=expected:
@@ -56,8 +56,8 @@ def verify_selected_wheel(wheel, artifact):
 def check_installed(*,wheel=None):
     import netcircuit_sim
     artifact=distribution('netcircuit-simulator')
-    if artifact.version!='0.2.0':
-        raise ValueError('Expected netcircuit-simulator==0.2.0.')
+    if artifact.version!='0.1.1':
+        raise ValueError('Expected netcircuit-simulator==0.1.1.')
     if not artifact.read_text('WHEEL') or not artifact.read_text('RECORD'):
         raise ValueError('Simulator distribution is shadowed by source metadata.')
     direct=json.loads(artifact.read_text('direct_url.json') or '{}')

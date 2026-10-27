@@ -1,6 +1,6 @@
 # net-Circuit-Simulator
 
-Independent `netcircuit-simulator==0.2.0` with replaceable simulation backends, Python >=3.11, consuming `netcircuit-contracts==1.0.1`. The Python namespace and public preview/dispatch imports remain `netcircuit_sim`. Release artifacts are wheel and sdist; the migration candidate is LOCAL_UNPUBLISHED until separately approved publication. No sibling checkout or API/Web implementation is required.
+Independent `netcircuit-simulator==0.1.1` with replaceable simulation backends, Python >=3.11, consuming `netcircuit-contracts==0.1.1`. The Python namespace and public preview/dispatch imports remain `netcircuit_sim`. Release artifacts are wheel and sdist; the migration candidate is LOCAL_UNPUBLISHED until separately approved publication. No sibling checkout or API/Web implementation is required.
 
 Supported CircuitGraph 1.0/1.1/1.2 passes offline schema/authoring validation and explicit domain dispatch into deterministic event simulation. Models retain switch/input, AND/74HC08, NOT, OR/XOR, LED/probe, clock and the bounded powered-HC08/source/resistor/LED DC subset. Known board/instrument visuals create no electrical nets. Unknown models are UNEXECUTABLE. Analog/SPICE/mixed adapters remain UNAVAILABLE without fabricated samples.
 
@@ -25,9 +25,9 @@ python -m pip install --require-hashes --only-binary=:all: -r requirements-verif
 python scripts/install_contracts.py
 $env:SOURCE_DATE_EPOCH = git log -1 --format=%ct
 python -m build --no-isolation --outdir "$env:NETCIRCUIT_ARTIFACTS_SESSION/dist"
-python -m pip install --no-deps --force-reinstall "$env:NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.2.0-py3-none-any.whl"
+python -m pip install --no-deps --force-reinstall "$env:NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.1.1-py3-none-any.whl"
 python -m pip check
-python scripts/check_installed.py --wheel "$env:NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.2.0-py3-none-any.whl"
+python scripts/check_installed.py --wheel "$env:NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.1.1-py3-none-any.whl"
 $product = (Get-Location).Path
 Push-Location $env:NETCIRCUIT_ARTIFACTS_SESSION
 python -I -m pytest "$product/tests" --basetemp "$env:NETCIRCUIT_ARTIFACTS_SESSION/pytest"
@@ -40,7 +40,7 @@ CI accepts immutable HTTPS Contracts/DEV URLs and SHA256 repository variables pl
 
 ## Compatibility and rollback
 
-This release adds `netcircuit_sim.backends` and keeps all eight legacy runtime modules byte-identical to Remote revision 25d2e6784035f6a8165142f8a8e03c4534512bcc. Existing Graph 1.0/1.1/1.2, model selection, descriptor identity, package/pin revisions, public import names and numeric bounds remain unchanged. Tests load shared fixtures from installed Contracts resources. API and Hardware consumers must both pin Simulator 0.2.0 and Contracts 1.0.1.
+This release adds `netcircuit_sim.backends` and keeps all eight legacy runtime modules byte-identical to Remote revision 25d2e6784035f6a8165142f8a8e03c4534512bcc. Existing Graph 1.0/1.1/1.2, model selection, descriptor identity, package/pin revisions, public import names and numeric bounds remain unchanged. Tests load shared fixtures from installed Contracts resources. API and Hardware consumers must both pin Simulator 0.1.1 and Contracts 0.1.1.
 
 Rollback restores the prior compatible Simulator/Contracts wheels and consumer dependency pins. No stored graph/capture/data conversion is part of M3. Original Remote source is retained as frozen provenance/rollback material. Git history extraction/mapping and integrated acceptance are recorded by the migration owner; no ancestry merge, authored commit or publication is implicit in this working tree.
 
@@ -55,4 +55,4 @@ Trusted application code may compose `BackendRegistry([provider, ...])`. A provi
 
 The current Hardware service composes built-ins only. A future custom worker must explicitly construct the same trusted provider registry in every spawned process and pass it to `run_plan(..., registry=...)`; registration in a parent process is not sufficient. Backend identity describes the adapter/plan interface, not an implemented ngspice ABI or model digest. Native payload ABI, pinned native builds/model artifacts, cancellation acknowledgment and typed analog results are future integration work. Current capture Contracts are digital and remain unchanged.
 
-For rollback, select `legacy` within0.2.0, or restore the immutable reviewed0.1.1 artifacts together with their matching consumer code and dependency pins. New consumers importing this facade cannot run against0.1.1. No document/capture migration is required.
+For rollback, select `legacy` within this release, or restore the historical pre-facade artifacts together with their matching consumer code and dependency pins. Historical artifacts sharing the 0.1.1 version remain distinct by archive SHA256; version alone is insufficient. Consumers importing this facade require the matching artifact payload. No document/capture migration is required.

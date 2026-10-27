@@ -18,8 +18,8 @@ def test_installed_wheel_has_expected_identity_and_resources():
     result=probe()
     assert result.returncode==0,result.stderr
     data=json.loads(result.stdout)
-    assert data['simulator']['version']=='0.2.0' and data['simulator']['owned_files']==9
-    assert data['contracts']['version']=='1.0.1' and data['contracts']['owned_files']>0
+    assert data['simulator']['version']=='0.1.1' and data['simulator']['owned_files']==9
+    assert data['contracts']['version']=='0.1.1' and data['contracts']['owned_files']>0
 
 def test_source_shadowing_is_rejected():
     result=probe(ROOT)

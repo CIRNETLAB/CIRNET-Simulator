@@ -45,16 +45,16 @@ jobs:
       - name: Build and verify the installed distribution
         run: |
           python -m build --no-isolation --outdir "$NETCIRCUIT_ARTIFACTS_SESSION/dist"
-          python -m pip install --no-deps --force-reinstall "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.2.0-py3-none-any.whl"
+          python -m pip install --no-deps --force-reinstall "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.1.1-py3-none-any.whl"
           python -m pip check
-          python scripts/check_installed.py --wheel "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.2.0-py3-none-any.whl"
+          python scripts/check_installed.py --wheel "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.1.1-py3-none-any.whl"
           (cd "$NETCIRCUIT_ARTIFACTS_SESSION/dist" && sha256sum ./*.whl ./*.tar.gz > SHA256SUMS)
           cd "$NETCIRCUIT_ARTIFACTS_SESSION"
           python -I -m pytest "$GITHUB_WORKSPACE/tests" --basetemp "$NETCIRCUIT_ARTIFACTS_SESSION/pytest"
       - name: Upload versioned wheel and sdist for review
         uses: actions/upload-artifact@v4
         with:
-          name: simulator-0.2.0
+          name: simulator-0.1.1
           path: ${{ env.NETCIRCUIT_ARTIFACTS_SESSION }}/dist/*
           if-no-files-found: error
       - name: Clean this owned verification session
