@@ -1,12 +1,14 @@
-# net-Circuit-Simulator
+# CIRNET-Simulator
 
-Independent `netcircuit-simulator==0.1.1` with replaceable simulation backends, Python >=3.11, consuming `netcircuit-contracts==0.1.1`. The Python namespace and public preview/dispatch imports remain `netcircuit_sim`. Release artifacts are wheel and sdist; publish immutable `v0.1.1` artifacts after standalone and integrated acceptance, with source revision and SHA256 in the system manifest. No sibling checkout or API/Web implementation is required.
+Repository: [CIRNETLAB/CIRNET-Simulator](https://github.com/CIRNETLAB/CIRNET-Simulator). Existing local directories may retain the `net-Circuit-Simulator` name. Python distributions/imports, `NETCIRCUIT_*` settings and protocol identifiers retain their compatible names.
+
+Independent `netcircuit-simulator==0.1.1` with replaceable simulation backends, Python >=3.11, consuming `netcircuit-contracts==0.1.1`. The Python namespace and public preview/dispatch imports remain `netcircuit_sim`. Release artifacts are wheel and sdist. Revalidate the existing immutable `v0.1.1` artifacts under the current repository URL while retaining their original source revisions and SHA256. Compare candidates from changed source separately; changed published bytes or tags require an explicit release decision and must respect immutability. Record the selected artifacts in the system manifest. No sibling checkout or API/Web implementation is required.
 
 Supported CircuitGraph 1.0/1.1/1.2 passes offline schema/authoring validation and explicit domain dispatch into deterministic event simulation. Models retain switch/input, AND/74HC08, NOT, OR/XOR, LED/probe, clock and the bounded powered-HC08/source/resistor/LED DC subset. Known board/instrument visuals create no electrical nets. Unknown models are UNEXECUTABLE. Analog/SPICE/mixed adapters remain UNAVAILABLE without fabricated samples.
 
 Time is integer nanoseconds; default digital delay is an educational 8 ns model, not measured component timing. Floating inputs remain X. Changes at one timestamp settle before capture with stable ordering. Captures hold actual 0/1/X transitions, at most four requested probes. Default software budgets are 1 ms, 100,000 scheduled events and 100,000 captured samples. The supported scheduling limit up to 1,000,000 is distinct from the fixed capture bound; exceeding either fails without truncation.
 
-Hardware owns the bounded worker pool, RPC sessions and stop/reset generation invalidation. Remote owns REST previews, auth/persistence and integrated acceptance. Canonical architecture remains [Lab-First](https://github.com/net-Circuit-Remote/net-Circuit-Remote/blob/25d2e6784035f6a8165142f8a8e03c4534512bcc/docs/ARCHITECTURE.md); [signal-domain authority](https://github.com/net-Circuit-Remote/net-Circuit-Remote/blob/25d2e6784035f6a8165142f8a8e03c4534512bcc/docs/architecture/signal-domains-and-simulation.md) defines current model boundaries.
+Hardware owns the bounded worker pool, RPC sessions and stop/reset generation invalidation. Remote owns REST previews, auth/persistence and integrated acceptance. Canonical architecture remains [Lab-First](https://github.com/CIRNETLAB/CIRNET-Remote/blob/25d2e6784035f6a8165142f8a8e03c4534512bcc/docs/ARCHITECTURE.md); [signal-domain authority](https://github.com/CIRNETLAB/CIRNET-Remote/blob/25d2e6784035f6a8165142f8a8e03c4534512bcc/docs/architecture/signal-domains-and-simulation.md) defines current model boundaries. The pinned authority revision is unchanged by the repository rename.
 
 ## Build and verify
 
@@ -30,13 +32,15 @@ python -m pip check
 python scripts/check_installed.py --wheel "$env:NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.1.1-py3-none-any.whl"
 $product = (Get-Location).Path
 Push-Location $env:NETCIRCUIT_ARTIFACTS_SESSION
-python -I -m pytest "$product/tests" --basetemp "$env:NETCIRCUIT_ARTIFACTS_SESSION/pytest"
+python -I -B -m pytest "$product/tests" --basetemp "$env:NETCIRCUIT_ARTIFACTS_SESSION/pytest"
 Pop-Location
 # Inspect results before guarded cleanup; keep artifacts selected for publication separately.
 node scripts/artifact-paths.mjs --cleanup $env:NETCIRCUIT_ARTIFACTS_SESSION
 ```
 
-CI accepts immutable HTTPS Contracts/DEV URLs and SHA256 repository variables plus an optional NETCIRCUIT_ARTIFACTS_READ_TOKEN. Only GitHub release-asset API requests receive credentials; redirects do not. Missing pins fail closed. No package is published automatically. Offline verification downloads the SHA256-locked closure into a wheelhouse, then installs with `--require-hashes --only-binary=:all: --no-index --find-links ABSOLUTE_WHEELHOUSE`; first-party artifacts remain selected by reviewed digest.
+CI accepts immutable HTTPS Contracts/DEV URLs and SHA256 repository variables plus an optional NETCIRCUIT_ARTIFACTS_READ_TOKEN. Configure direct `https://api.github.com/repos/CIRNETLAB/CIRNET-Contracts/releases/assets/<id>` URLs, preserving the selected IDs, filenames and digests. Public published assets support anonymous access; authenticated CI/draft access still uses the selected-repository read token. Only GitHub release-asset API requests receive credentials; redirects do not. Missing pins fail closed. No package is published automatically. Offline verification downloads the SHA256-locked closure into a wheelhouse, then installs with `--require-hashes --only-binary=:all: --no-index --find-links ABSOLUTE_WHEELHOUSE`; first-party artifacts remain selected by reviewed digest.
+
+The existing immutable [v0.1.1 release](https://github.com/CIRNETLAB/CIRNET-Simulator/releases/tag/v0.1.1) retains its original tag, artifact bytes and source provenance. A build from renamed current-source documentation/metadata is a separate candidate even when its package version is 0.1.1; it must not replace those published bytes or be attributed to the original tag. See [release verification work](docs/M6_RELEASE_WORK.md).
 
 ## Compatibility and rollback
 

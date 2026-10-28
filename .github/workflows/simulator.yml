@@ -1,4 +1,4 @@
-name: Simulator
+name: CIRNET Simulator
 on:
   push:
   pull_request:
@@ -53,7 +53,7 @@ jobs:
           python scripts/check_installed.py --wheel "$NETCIRCUIT_ARTIFACTS_SESSION/dist/netcircuit_simulator-0.1.1-py3-none-any.whl"
           (cd "$NETCIRCUIT_ARTIFACTS_SESSION/dist" && sha256sum ./*.whl ./*.tar.gz > SHA256SUMS)
           cd "$NETCIRCUIT_ARTIFACTS_SESSION"
-          python -I -m pytest "$GITHUB_WORKSPACE/tests" --basetemp "$NETCIRCUIT_ARTIFACTS_SESSION/pytest"
+          python -I -B -m pytest "$GITHUB_WORKSPACE/tests" --basetemp "$NETCIRCUIT_ARTIFACTS_SESSION/pytest"
       - name: Upload versioned wheel and sdist for review
         uses: actions/upload-artifact@v4
         with:
